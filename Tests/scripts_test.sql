@@ -1,7 +1,8 @@
 /*********************************************************************************************************/
 	/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Testing Silver Table <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
 /*********************************************************************************************************/
-
+USE MASTER;
+USE DataWarehouse;
 /**>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>silver.crm_cust_info<<<<<<<<<<<<**/
 -- Checking Null Values and Duplicated
 -- Expectation: No Values
@@ -43,3 +44,71 @@ select distinct prd_line from silver.crm_prd_info;
 -- Expectation: No Values
 select * from silver.crm_prd_info
 where prd_start_dt >  prd_end_dt or prd_start_dt is null;
+
+/**>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>silver.crm_sales_details<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<**/
+
+-- Checking for unwanted space
+-- Expectation: No Values
+SELECT sls_ord_num FROM silver.crm_sales_details
+where sls_ord_num != trim(sls_ord_num);
+
+-- Checking if foreign Key are working perfectly
+-- Expectation: No Values
+SELECT * FROM silver.crm_sales_details
+where sls_cust_id not in (select cst_id from silver.crm_cust_info)
+/*select prd_key from silver.crm_prd_info*/;
+
+-- Checking The Date Invaladity
+--Expectation: No Values
+SELECT sls_order_dt FROM bronze.crm_sales_details
+WHERE 
+	sls_order_dt <= 0
+	or len(sls_order_dt) != 8 
+	or sls_order_dt = 205004955
+;
+
+SELECT sls_ship_dt FROM bronze.crm_sales_details
+WHERE 
+	sls_ship_dt = 0 or
+	LEN(sls_ship_dt) != 8
+;
+
+SELECT sls_due_dt FROM bronze.crm_sales_details
+WHERE 
+	sls_due_dt = 0 or
+	LEN(sls_due_dt) != 8
+;
+
+--Checking Date Rule for business
+--Expectation: No values
+select * from (
+SELECT CASE
+	WHEN sls_order_dt <= 0 OR LEN(sls_order_dt) != 8 THEN NULL
+	ELSE CAST(CAST(sls_order_dt AS NVARCHAR(10)) AS DATE)
+END AS sls_order_dt,
+CASE
+	WHEN sls_ship_dt <= 0 OR LEN(sls_ship_dt) != 8 THEN NULL
+	ELSE CAST(CAST(sls_ship_dt AS NVARCHAR(10)) AS DATE)
+END AS sls_ship_dt FROM bronze.crm_sales_details)t where sls_order_dt > sls_ship_dt;
+
+-- Checking Business Rule
+-- Expectation: No Values
+SELECT sls_sales, sls_quantity, sls_price FROM silver.crm_sales_details
+WHERE
+	sls_sales <= 0 or
+	sls_sales is null or
+	sls_sales != sls_quantity * sls_price
+;
+
+SELECT sls_sales, sls_quantity, sls_price FROM silver.crm_sales_details
+WHERE
+	sls_quantity <= 0 or
+	sls_quantity is null
+;
+
+SELECT sls_sales, sls_quantity, sls_price
+FROM silver.crm_sales_details
+WHERE
+	sls_price <= 0 or
+	sls_price is null
+;
