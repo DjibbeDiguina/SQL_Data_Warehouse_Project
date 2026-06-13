@@ -153,3 +153,25 @@ select CID from silver.erp_CUST_AZ12);
 SELECT DISTINCT CNTRY FROM silver.erp_LOC_A101;
 
 SELECT * FROM silver.erp_LOC_A101;
+
+
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> silver.erp_PX_CAT_G1V2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
+
+--Checking For Id relationship
+--Expectation: no Values
+SELECT ID FROM silver.erp_PX_CAT_G1V2 WHERE ID NOT IN
+(select cat_id from silver.crm_prd_info);
+
+-- Checking for unwanted Space
+-- Expectation: No Values
+SELECT  CAT FROM silver.erp_PX_CAT_G1V2 WHERE CAT !=TRIM(CAT);
+
+-- Checking for unwanted Space
+-- Expectation: No Values
+SELECT  SUBCAT FROM silver.erp_PX_CAT_G1V2 WHERE SUBCAT !=TRIM(SUBCAT);
+
+-- Checking for consistency
+SELECT DISTINCT MAINTENANCE FROM silver.erp_PX_CAT_G1V2;
+
+
+SELECT * FROM silver.erp_PX_CAT_G1V2
