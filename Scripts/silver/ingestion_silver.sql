@@ -1,7 +1,11 @@
-/**>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> SILVER CRM_CUST_INFO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<**/
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+			/***************************************** CRM TABLE *******************************************/
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+
 USE MASTER;
 USE DataWarehouse;
 
+/**>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> SILVER CRM_CUST_INFO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<**/
 TRUNCATE TABLE silver.crm_cust_info;
 INSERT INTO silver.crm_cust_info (
 	cst_id,
@@ -118,3 +122,36 @@ END AS sls_price
 FROM bronze.crm_sales_details;
 
 select count(*) from silver.crm_sales_details;
+
+
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+			/***************************************** ERP TABLE *******************************************/
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+
+
+/***************************************** silver.erp_CUST_AZ12 *******************************************/
+TRUNCATE TABLE silver.erp_CUST_AZ12;
+INSERT INTO silver.erp_CUST_AZ12(
+	CID,
+	BDATE,
+	GEN
+)
+SELECT
+CASE
+	WHEN CID LIKE ('NAS%') THEN SUBSTRING(CID, 4, LEN(CID))
+	ELSE CID
+END AS CID,
+CASE
+	WHEN BDATE > GETDATE() THEN NULL
+	ELSE BDATE
+END AS BDATE,
+CASE UPPER(TRIM(GEN))
+	WHEN 'F' THEN 'Female'
+	WHEN 'M' THEN 'Male'
+	WHEN '' THEN NULL
+	WHEN ' ' THEN NULL
+	ELSE TRIM(GEN)
+END AS GEN
+FROM bronze.erp_CUST_AZ12;
+
+select count(*) from silver.erp_CUST_AZ12;
