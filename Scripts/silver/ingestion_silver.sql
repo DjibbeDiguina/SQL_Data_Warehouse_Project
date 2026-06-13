@@ -177,3 +177,21 @@ END AS CNTRY
 FROM bronze.erp_LOC_A101;
 
 select count(*) from silver.erp_LOC_A101;
+
+
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> silver.erp_PX_CAT_G1V2 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<**/
+TRUNCATE TABLE silver.erp_PX_CAT_G1V2;
+INSERT INTO silver.erp_PX_CAT_G1V2(
+	ID,
+	CAT,
+	SUBCAT,
+	MAINTENANCE
+)
+SELECT
+ID,
+CAT,
+SUBCAT,
+MAINTENANCE
+FROM bronze.erp_PX_CAT_G1V2;
+
+select count(*) from silver.erp_PX_CAT_G1V2;
