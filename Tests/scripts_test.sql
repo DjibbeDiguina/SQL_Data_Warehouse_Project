@@ -134,3 +134,22 @@ SELECT DISTINCT GEN FROM silver.erp_CUST_AZ12;
 
 
 SELECT* FROM silver.erp_CUST_AZ12;
+
+
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> silver.erp_LOC_A101 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
+
+-- Checking unwanted Space 
+--Expectatio : No Values
+SELECT CID FROM silver.erp_LOC_A101 WHERE CID != TRIM(CID);
+
+-- Checking for relationship ID format 
+-- Expectation: No Values
+SELECT 
+CID FROM silver.erp_LOC_A101 where CID NOT IN (
+select CID from silver.erp_CUST_AZ12);
+
+--Checking for consistency and standarization
+--Expectation: Consistence
+SELECT DISTINCT CNTRY FROM silver.erp_LOC_A101;
+
+SELECT * FROM silver.erp_LOC_A101;
