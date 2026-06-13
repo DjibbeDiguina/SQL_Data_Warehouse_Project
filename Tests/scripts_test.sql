@@ -112,3 +112,25 @@ WHERE
 	sls_price <= 0 or
 	sls_price is null
 ;
+
+
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> silver.erp_CUST_AZ12 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
+
+--Checking for valide connection or relatioship between to table
+--Expectation: No Values
+SELECT
+CID
+FROM silver.erp_CUST_AZ12 WHERE
+CID NOT IN (
+select cst_key from silver.crm_cust_info);
+
+-- Checking BDATE outlier 
+--Expectation : No Values
+SELECT  BDATE FROM silver.erp_CUST_AZ12 where BDATE > GETDATE();
+
+-- Checking Consistency and Standarization
+-- Expectation: FULL VALUES Values
+SELECT DISTINCT GEN FROM silver.erp_CUST_AZ12;
+
+
+SELECT* FROM silver.erp_CUST_AZ12;
