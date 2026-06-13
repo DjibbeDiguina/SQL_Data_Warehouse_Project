@@ -155,3 +155,25 @@ END AS GEN
 FROM bronze.erp_CUST_AZ12;
 
 select count(*) from silver.erp_CUST_AZ12;
+
+
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> silver.erp_LOC_A101 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
+TRUNCATE TABLE silver.erp_LOC_A101;
+INSERT INTO silver.erp_LOC_A101(
+	CID,
+	CNTRY
+)
+SELECT 
+CASE
+	WHEN CID LIKE ('%-%') THEN REPLACE(TRIM(CID), '-', '')
+	ELSE TRIM(CID)
+END AS CID,
+CASE 
+	WHEN UPPER(TRIM(CNTRY)) IN ('US','USA') THEN 'United States'
+	WHEN UPPER(TRIM(CNTRY)) = 'DE' THEN 'Germany'
+	WHEN UPPER(TRIM(CNTRY)) IN ('', ' ') THEN NULL
+	ELSE TRIM(CNTRY)
+END AS CNTRY 
+FROM bronze.erp_LOC_A101;
+
+select count(*) from silver.erp_LOC_A101;
