@@ -1,4 +1,4 @@
-# 🏢 Data Warehouse – Gold Layer Data Catalog
+# 🏢 Data Warehouse: Gold Layer Data Catalog
 
 ## Overview
 
